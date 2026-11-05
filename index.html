@@ -1,33 +1,53 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Larissa Nutrition Coaching</title>
-  <style>
-    body {
-      background: #F7EDE5;
-      font-family: Arial, sans-serif;
-      color: #68432F;
-      text-align: center;
-      padding: 60px 20px;
-    }
-    h1 { font-size: 30px; }
-    p { font-size: 17px; }
-    button {
-      background: #946540;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      padding: 15px 35px;
-      font-size: 17px;
-    }
-  </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f6ede5">
+<title>Larissa Nutrition Coaching | Calculadora</title>
+<style>
+:root{font-family:system-ui,-apple-system,Arial,sans-serif;color:#553c30;background:#f6ede5}*{box-sizing:border-box}body{margin:0;padding:22px 15px 45px}.app{max-width:570px;margin:auto}header{text-align:center;padding:19px 0 24px}.brand{font-size:12px;letter-spacing:2px;font-weight:700;color:#9b7258}h1{font-family:Georgia,serif;font-size:31px;margin:9px 0}p{line-height:1.5}.sub{color:#846f62;font-size:14px}.panel{background:#fffaf6;border:1px solid #e5d5c8;border-radius:22px;padding:20px;box-shadow:0 5px 22px #6b43220a;margin-bottom:16px}h2{font-size:18px;margin:0 0 16px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}label{font-size:13px;font-weight:650;display:block;margin-bottom:6px}input,select{width:100%;padding:13px 10px;border:1px solid #d8c6b7;border-radius:10px;background:#fff;color:#49362b;font-size:16px;min-width:0}.field{margin-bottom:14px}.grid .field{margin-bottom:0}button{border:0;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer}.primary{background:#896044;color:white;flex:2}.secondary{background:#e9dbd0;color:#553c30;flex:1}.buttons{display:flex;gap:9px;margin-top:19px}.results{display:none}.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{background:#f5eae1;padding:15px 12px;border-radius:13px}.metric span{font-size:12px;color:#755d50}.metric strong{display:block;margin-top:7px;font-size:21px}.note{font-size:12px;color:#79695e;line-height:1.55;margin:14px 0 0}.error{color:#a12929;font-size:13px;margin-top:10px}footer{text-align:center;font-size:12px;color:#927b6b;margin-top:25px}@media(max-width:350px){.grid,.cards{grid-template-columns:1fr}}
+</style>
 </head>
-<body>
-  <h1>Larissa Nutrition Coaching</h1>
-  <p>Seu bem-estar, sua evolução.</p>
-  <button>Entrar</button>
-</body>
-</html>
+<body><main class="app">
+<header><div class="brand">LARISSA NUTRITION COACHING</div><h1>Calculadora Nutricional</h1><p class="sub">Cálculos rápidos para seu acompanhamento profissional</p></header>
+<section class="panel"><h2>Informações para calcular</h2>
+<form id="form">
+<div class="grid">
+<div class="field"><label for="peso">Peso (kg)</label><input id="peso" type="number" inputmode="decimal" min="1" max="500" step="any" placeholder="Ex.: 57.8" required></div>
+<div class="field"><label for="altura">Altura (cm)</label><input id="altura" type="number" inputmode="decimal" min="80" max="250" step="any" placeholder="Ex.: 170" required></div>
+<div class="field"><label for="idade">Idade (anos)</label><input id="idade" type="number" inputmode="numeric" min="18" max="119" step="1" placeholder="Ex.: 26" required></div>
+<div class="field"><label for="sexo">Sexo na equação</label><select id="sexo"><option value="f">Feminino</option><option value="m">Masculino</option></select></div>
+</div>
+<div class="field" style="margin-top:14px"><label for="atividade">Nível de atividade física</label><select id="atividade"><option value="1.2">Sedentário (1,20)</option><option value="1.375">Levemente ativo (1,375)</option><option value="1.55">Moderadamente ativo (1,55)</option><option value="1.725">Muito ativo (1,725)</option><option value="1.9">Extremamente ativo (1,90)</option></select></div>
+<div class="field"><label for="objetivo">Objetivo</label><select id="objetivo"><option value="emagrecer">Emagrecimento</option><option value="manter">Manutenção</option><option value="ganhar">Ganho de massa muscular</option><option value="definir">Definição corporal</option><option value="recompor">Recomposição corporal</option></select></div>
+<div class="buttons"><button class="primary" type="submit">Calcular tudo</button><button class="secondary" type="reset">Limpar</button></div><div id="erro" class="error" role="alert"></div>
+</form></section>
+<section class="panel results" id="resultados" aria-live="polite"><h2>Seus resultados</h2><div class="cards" id="cards"></div><p class="note" id="explicacao"></p><p class="note">Estimativas para adultos, não prescrições automáticas. Gestação, lactação, menores de 18 anos e condições clínicas específicas exigem avaliação e métodos apropriados. Confira a adequação dos resultados antes de utilizá-los.</p></section>
+<footer>Larissa Nutrition Coaching · Uso pessoal</footer>
+</main>
+<script>
+const form=document.getElementById('form');
+const results=document.getElementById('resultados');
+const error=document.getElementById('erro');
+const br=n=>Math.round(n).toLocaleString('pt-BR');
+form.addEventListener('reset',()=>{results.style.display='none';error.textContent='';});
+form.addEventListener('submit',event=>{
+ event.preventDefault();error.textContent='';
+ const p=Number(document.getElementById('peso').value),h=Number(document.getElementById('altura').value),a=Number(document.getElementById('idade').value);
+ const s=document.getElementById('sexo').value,fac=Number(document.getElementById('atividade').value),obj=document.getElementById('objetivo').value;
+ if(!Number.isFinite(p)||!Number.isFinite(h)||!Number.isInteger(a)||p<=0||p>500||h<80||h>250||a<18||a>119){error.textContent='Confira peso, altura e idade (calculadora destinada a adultos).';results.style.display='none';return;}
+ const imc=p/(h/100)**2;
+ const tmb=10*p+6.25*h-5*a+(s==='m'?5:-161);
+ const get=tmb*fac;
+ const ajustes={emagrecer:-300,manter:0,ganhar:200,definir:-200,recompor:0};
+ const calorias=get+ajustes[obj];
+ const proteina=p*({emagrecer:2,manter:1.6,ganhar:1.8,definir:2,recompor:2}[obj]);
+ const gordura=p*0.9;
+ const carbo=(calorias-4*proteina-9*gordura)/4;
+ if(calorias<=0||carbo<0){error.textContent='Os parâmetros produziram uma meta incompatível. Revise os dados e o ajuste calórico.';results.style.display='none';return;}
+ const itens=[['IMC',imc.toFixed(1).replace('.',',')],['TMB',br(tmb)+' kcal/dia'],['GET',br(get)+' kcal/dia'],['Meta calórica',br(calorias)+' kcal/dia'],['Proteínas',br(proteina)+' g/dia'],['Carboidratos',br(carbo)+' g/dia'],['Gorduras',br(gordura)+' g/dia'],['Água estimada',(p*0.035).toFixed(2).replace('.',',')+' L/dia']];
+ document.getElementById('cards').innerHTML=itens.map(([nome,valor])=>'<div class="metric"><span>'+nome+'</span><strong>'+valor+'</strong></div>').join('');
+ document.getElementById('explicacao').textContent='Métodos: IMC = peso/altura²; TMB = Mifflin-St Jeor; GET = TMB × fator de atividade. Ajuste ilustrativo: '+(ajustes[obj]>0?'+':'')+ajustes[obj]+' kcal/dia. Proteína: '+({emagrecer:2,manter:1.6,ganhar:1.8,definir:2,recompor:2}[obj])+' g/kg; gordura: 0,9 g/kg; carboidratos: calorias restantes; água: 35 mL/kg. Fatores e metas são pontos de partida ajustáveis, não necessidades exatas.';
+ results.style.display='block';results.scrollIntoView({behavior:'smooth',block:'start'});
+});
+</script></body></html>
